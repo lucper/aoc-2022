@@ -3,14 +3,15 @@
 import fileinput
 
 with fileinput.input() as fin:
-    vals = []
-    curr = 0
+    vals, acc = [], 0
     for line in fin:
         line = line.strip()
         if line:
-            curr += int(line)
+            acc += int(line)
         else:
-            vals.append(curr)
-            curr = 0
+            vals.append(acc)
+            acc = 0
+    vals.append(acc)
 
 print(max(vals))
+print(sum(sorted(vals, reverse=True)[:3]))
