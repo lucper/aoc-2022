@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 import fileinput
+from itertools import chain
 
-count = 0
+def get_intervals(pair):
+    return chain.from_iterable(tuple(map(int, interval.split('-'))) 
+            for interval in pair.split(','))
+
+def overlap(x, y, z, w):
+    return x <= w and z <= y
 
 with fileinput.input() as fin:
-    for line in fin:
-        p1, p2 = [interval.split('-') for interval in line.strip().split(',')]
-        x, y = int(p1[0]), int(p1[-1])
-        z, w = int(p2[0]), int(p2[-1])
-        count += 1 if x <= w and z <= y else 0
-
-print(count)
+    print(sum(overlap(*get_intervals(line.strip())) for line in fin))
