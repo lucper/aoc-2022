@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 """
-Part 1
+Part 2
 total score = sum of scores of each round
-scores: shape(rock (A,X) = 1 | paper (B,Y) = 2 | scissors (C,Z) = 3) +
+scores: shape(rock (A) = 1 | paper (B) = 2 | scissors (C) = 3) +
         outcome(loss = 0 | draw = 3 | win = 6)
+X = lose
+Y = tie
+Z = win
 """
 
 import fileinput
