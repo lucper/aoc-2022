@@ -30,10 +30,15 @@ def parse(inst):
     return n, source, target
 
 ## run instructions on stacks
-def run(instructions, stacks):
+def run(instructions, stacks, crate_mover='9001'):
+    if crate_mover not in {'9000', '9001'}:
+        raise ValueError('invalid crate mover model')
     for inst in instructions:
         n, source, target = parse(inst)
-        stacks[target].extend(stacks[source][-n:])
+        top_crates = stacks[source][-n:]
+        if crate_mover == '9000':
+            top_crates = reversed(top_crates)
+        stacks[target].extend(top_crates)
         del stacks[source][-n:]
     return stacks
 
