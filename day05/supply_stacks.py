@@ -2,6 +2,7 @@
 
 import fileinput
 import re
+import copy
 
 ## read input
 with fileinput.input() as fin:
@@ -31,6 +32,7 @@ def parse(inst):
 
 ## run instructions on stacks
 def run(instructions, stacks, crate_mover='9001'):
+    stacks = copy.deepcopy(stacks)
     if crate_mover not in {'9000', '9001'}:
         raise ValueError('invalid crate mover model')
     for inst in instructions:
@@ -45,5 +47,5 @@ def run(instructions, stacks, crate_mover='9001'):
 def get_tops(stacks):
     return ''.join(stack[-1] if stack else '-' for stack in stacks.values())
 
-last_state = run(instructions, stacks_col)
-print(get_tops(last_state))
+print(get_tops(run(instructions, stacks_col, crate_mover='9000')))
+print(get_tops(run(instructions, stacks_col, crate_mover='9001')))
