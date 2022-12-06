@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import fileinput
+import re
 
 ## read input
 with fileinput.input() as fin:
@@ -19,13 +20,25 @@ stacks_ir = [tuple(reversed([stack[i] for stack in stacks if not stack[i].isspac
              for i in stacks_idx]
 stacks_col = {int(k):list(v) for k, *v in stacks_ir}
 
+## function to parse instruction
+def parse(inst):
+    """TODO: make order of move, from, to be arbitrary
+    """
+    imove, ifrom, ito = re.findall(r'[a-z]+ [0-9]', inst)
+    n, source, target = int(imove[-1]), int(ifrom[-1]), int(ito[-1]),
+    return n, source, target
+
 ## run instructions on stacks
-for inst in instructions:
-    # move <n> from <source> to <target>
-    n, source, target = parse(inst)
+def run(instructions, stacks):
+    for inst in instructions:
+        n, source, target = parse(inst)
+        for _ in range(n):
+            if stacks[source]:
+                stacks[target].append(stacks[source].pop())
+    return stacks
 
-    for _ in range(n):
-        if stacks_col[source]:
-            stacks_col[target].append(stacks_col[source].pop())
+def get_tops(stacks):
+    return ''.join(stack[-1] for stack in stacks.values())
 
-    print(stacks_col)
+last_state = run(instructions, stacks_col)
+print(get_tops(last_state))
