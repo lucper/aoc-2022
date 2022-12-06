@@ -2,7 +2,6 @@
 
 import fileinput
 import re
-import pprint
 
 ## read input
 with fileinput.input() as fin:
@@ -37,7 +36,6 @@ def run(instructions, stacks):
         for _ in range(n):
             if stacks[source]:
                 stacks[target].append(stacks[source].pop())
-        pprint.pprint(stacks)
     return stacks
 
 def get_tops(stacks):
