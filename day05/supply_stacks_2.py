@@ -33,9 +33,8 @@ def parse(inst):
 def run(instructions, stacks):
     for inst in instructions:
         n, source, target = parse(inst)
-        if stacks[source]:
-            stacks[target].extend(stacks[source][-n:])
-            del stacks[source][-n:]
+        stacks[target].extend(stacks[source][-n:])
+        del stacks[source][-n:]
     return stacks
 
 def get_tops(stacks):
