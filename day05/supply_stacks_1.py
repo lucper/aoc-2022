@@ -2,6 +2,7 @@
 
 import fileinput
 import re
+import pprint
 
 ## read input
 with fileinput.input() as fin:
@@ -24,8 +25,9 @@ stacks_col = {int(k):list(v) for k, *v in stacks_ir}
 def parse(inst):
     """TODO: make order of move, from, to be arbitrary
     """
-    imove, ifrom, ito = re.findall(r'[a-z]+ [0-9]', inst)
-    n, source, target = int(imove[-1]), int(ifrom[-1]), int(ito[-1]),
+    #imove, ifrom, ito = re.findall(r'[a-z]+ [0-9]+', inst)
+    imove, ifrom, ito = re.findall(r'[0-9]+', inst)
+    n, source, target = int(imove), int(ifrom), int(ito)
     return n, source, target
 
 ## run instructions on stacks
@@ -35,10 +37,11 @@ def run(instructions, stacks):
         for _ in range(n):
             if stacks[source]:
                 stacks[target].append(stacks[source].pop())
+        pprint.pprint(stacks)
     return stacks
 
 def get_tops(stacks):
-    return ''.join(stack[-1] for stack in stacks.values())
+    return ''.join(stack[-1] if stack else '-' for stack in stacks.values())
 
 last_state = run(instructions, stacks_col)
 print(get_tops(last_state))
