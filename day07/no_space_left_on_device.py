@@ -2,13 +2,14 @@
 
 import fileinput
 
+DISK_SPACE = 70_000_000
+REQ_SPACE = 30_000_000
+
 class Dir:
     def __init__(self, name, pos):
         self.name = name
         self.pos = pos
         self.size = 0
-    def __repr__(self):
-        return f'<{self.name} {self.size} {self.pos}>'
     def __hash__(self):
         return self.pos
     def __eq__(self, other):
@@ -19,6 +20,13 @@ class Dir:
 stack = []
 visited = set()
 
+## I assume this never happens:
+##   $ cd a
+##   $ cd ..
+##   $ cd a
+##   $ ls
+## Otherwise, there would be two "different" directories 'a'
+## that should be the same.
 with fileinput.input() as fin:
     for line in fin:
         match line.strip().split():
@@ -36,5 +44,10 @@ with fileinput.input() as fin:
                 pass
             case [file_size, file_name]:
                 stack[-1].size += int(file_size)
-        print(stack, visited)
-    print(sum(d.size for d in visited if d.size <= 100000))
+
+## root is never "visited", but it always has size > 100_000
+print(sum(d.size for d in visited if d.size <= 100_000))
+
+## Part 2
+unused_space = DISK_SPACE - sum(d.size for d in stack)
+print(min(d.size for d in visited if d.size >= REQ_SPACE - unused_space))
