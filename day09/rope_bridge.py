@@ -6,13 +6,17 @@ from math import copysign
 def sign(n):
     return int(copysign(1, n)) if n != 0 else 0
 
+def touching(pos1, pos2):
+    (a, b), (c, d) = pos1, pos2
+    return abs(c - a) <= 1 and abs(d - b) <= 1
+
 def catch_up(src, dest):
-    a, b = src
     c, d = dest
     path = []
-    while abs(c - a) > 1 or abs(d - b) > 1:
-        a, b = a + sign(c - a), b + sign(d - b)
-        path.append((a, b))
+    while not touching(src, dest):
+        a, b = src
+        src = (a + sign(c - a), b + sign(d - b))
+        path.append(src)
     return path
 
 def walk_right(pos, k):
@@ -48,8 +52,8 @@ with fileinput.input() as fin:
             *_, head = walk_down(head, steps)
         else:
             raise ValueError('invalid command')
-        if path := catch_up(tail, head):
-            *path, tail = path
+        if not touching(tail, head):
+            *path, tail = catch_up(tail, head)
             visited.update(path + [tail])
 
 ## Part 1
