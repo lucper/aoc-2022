@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import fileinput
+from itertools import takewhile
 
 def left_visible(i, j, grid):
     return grid[i][j] > max(grid[i][k] for k in range(0, j))
@@ -14,36 +15,22 @@ def top_visible(i, j, grid):
 def bottom_visible(i, j, grid):
     return grid[i][j] > max(grid[k][j] for k in range(i + 1, len(grid)))
 
-def scenic_score(i, j, grid):
-    k, top_score = i - 1, 0
-    while k >= 0 and grid[k][j] < grid[i][j]:
-        top_score += 1
-        k -= 1
-    if k >= 0 and grid[k][j] >= grid[i][j]:
-        top_score += 1
-    
-    k, bottom_score = i + 1, 0
-    while k < len(grid) and grid[k][j] < grid[i][j]:
-        bottom_score += 1
-        k += 1
-    if k < len(grid) and grid[k][j] >= grid[i][j]:
-        bottom_score += 1
-    
-    k, right_score = j + 1, 0
-    while k < len(grid[0]) and grid[i][k] < grid[i][j]:
-        right_score += 1
-        k += 1
-    if k < len(grid[0]) and grid[i][k] >= grid[i][j]:
-        right_score += 1
+def scenic_score(i, seq):
+    """Right score of seq[i]; for left score, call:
+    >>> _scenic_score(len(seq)-i-1, list(reversed(seq)))
+    Negative indices will yield unexpected behavior.
+    """
+    score = sum(1 for _ in takewhile(lambda x: x < seq[i], seq[i + 1:]))
+    ## check if last tree (if it exists) has greater or same height
+    score += 1 if score + i + 1 < len(seq) and seq[score + i + 1] >= seq[i] else 0
+    return score
 
-    k, left_score = j - 1, 0
-    while k >= 0 and grid[i][k] < grid[i][j]:
-        left_score += 1
-        k -= 1
-    if k >= 0 and grid[i][k] >= grid[i][j]:
-        left_score += 1
+def top_and_bottom_scenic_scores(i, j, grid):
+    column = [grid[k][j] for k, _ in enumerate(grid)]
+    return scenic_score(i, column) * scenic_score(len(column) - i - 1, list(reversed(column)))
 
-    return left_score * bottom_score * right_score * top_score
+def left_and_right_scenic_scores(i, j, grid):
+    return scenic_score(j, grid[i]) * scenic_score(len(grid[i]) - j - 1, list(reversed(grid[i])))
 
 def count_interior_trees(grid):
     return sum(1 for i in range(1, len(grid) - 1) 
@@ -54,7 +41,7 @@ def count_interior_trees(grid):
                     bottom_visible(i, j, grid))
 
 def best_scenic_score(grid):
-    return max(scenic_score(i, j, grid)
+    return max(top_and_bottom_scenic_scores(i, j, grid) * left_and_right_scenic_scores(i, j, grid)
                for i in range(1, len(grid) - 1)
                for j in range(1, len(grid[0]) - 1))
 
