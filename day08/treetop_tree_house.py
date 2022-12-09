@@ -2,9 +2,6 @@
 
 import fileinput
 
-def transpose(grid):
-    return [[row[i] for row in grid] for i, _ in enumerate(grid[0])]
-
 def left_visible(i, j, grid):
     return grid[i][j] > max(grid[i][k] for k in range(0, j))
 
