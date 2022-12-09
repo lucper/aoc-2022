@@ -9,19 +9,19 @@ def touching(pos1, pos2):
 
 def walk_right(pos, k):
     i, j = pos
-    return [(i, x) for x in range(j + 1, j + k + 1, 1)]
+    return [(x, j) for x in range(i + 1, i + k + 1, 1)]
 
 def walk_left(pos, k):
     i, j = pos
-    return [(i, x) for x in range(j - 1, j - k - 1, -1)]
+    return [(x, j) for x in range(i - 1, i - k - 1, -1)]
 
 def walk_up(pos, k):
     i, j = pos
-    return [(x, j) for x in range(i - 1, i - k - 1, -1)]
+    return [(i, y) for y in range(j + 1, j + k + 1, 1)]
 
 def walk_down(pos, k):
     i, j = pos
-    return [(x, j) for x in range(i + 1, i + k + 1, 1)]
+    return [(i, y) for y in range(j - 1, j - k - 1, -1)]
 
 with fileinput.input() as fin:
     curr_pos = (0, 0)
