@@ -15,9 +15,9 @@ def top_visible(i, j, grid):
 def bottom_visible(i, j, grid):
     return grid[i][j] > max(grid[k][j] for k in range(i + 1, len(grid)))
 
-def scenic_score(i, seq):
+def partial_score(i, seq):
     """Right score of seq[i]; for left score, call:
-    >>> _scenic_score(len(seq)-i-1, list(reversed(seq)))
+    >>> partial_score(len(seq)-i-1, list(reversed(seq)))
     Negative indices will yield unexpected behavior.
     """
     score = sum(1 for _ in takewhile(lambda x: x < seq[i], seq[i + 1:]))
@@ -27,10 +27,10 @@ def scenic_score(i, seq):
 
 def top_and_bottom_scenic_scores(i, j, grid):
     column = [grid[k][j] for k, _ in enumerate(grid)]
-    return scenic_score(i, column) * scenic_score(len(column) - i - 1, list(reversed(column)))
+    return partial_score(i, column) * partial_score(len(column) - i - 1, list(reversed(column)))
 
 def left_and_right_scenic_scores(i, j, grid):
-    return scenic_score(j, grid[i]) * scenic_score(len(grid[i]) - j - 1, list(reversed(grid[i])))
+    return partial_score(j, grid[i]) * partial_score(len(grid[i]) - j - 1, list(reversed(grid[i])))
 
 def count_interior_trees(grid):
     return sum(1 for i in range(1, len(grid) - 1) 
