@@ -1,24 +1,19 @@
 #!/usr/bin/env python
 
 import fileinput
+from math import copysign
 
-def touching(pos1, pos2):
-    a, b = pos1
-    c, d = pos2
-    return abs(a - c) <= 1 and abs(b - d) <= 1
+def sign(n):
+    return int(copysign(1, n)) if n != 0 else 0
 
-## TODO
-## if not in_same_axis(tail, head), then
-## tail := (x+1,y+1) if a < c and b < d
-## or
-## tail := (x-1,y-1) if a > c and b > d
-##
-## if in_same_axis(tail, head), then
-## ...
-def in_same_axis(pos1, pos2):
-    a, b = pos1
-    c, d = pos2
-    return a == c or b == d
+def catch_up(src, dest):
+    a, b = src
+    c, d = dest
+    path = []
+    while abs(c - a) > 1 or abs(d - b) > 1:
+        a, b = a + sign(c - a), b + sign(d - b)
+        path.append((a, b))
+    return path
 
 def walk_right(pos, k):
     i, j = pos
@@ -36,22 +31,26 @@ def walk_down(pos, k):
     i, j = pos
     return [(i, y) for y in range(j - 1, j - k - 1, -1)]
 
+head = tail = (0, 0)
+visited = {tail}
+
 with fileinput.input() as fin:
-    head = (0, 0)
     for line in fin:
         direction, steps = line.strip().split()
         steps = int(steps)
         if direction == 'L':
-            *track, head = walk_left(head, steps)
-            print(track + [head])
+            *_, head = walk_left(head, steps)
         elif direction == 'R':
-            *track, head = walk_right(head, steps)
-            print(track + [head])
+            *_, head = walk_right(head, steps)
         elif direction == 'U':
-            *track, head = walk_up(head, steps)
-            print(track + [head])
+            *_, head = walk_up(head, steps)
         elif direction == 'D':
-            *track, head = walk_down(head, steps)
-            print(track + [head])
+            *_, head = walk_down(head, steps)
         else:
             raise ValueError('invalid command')
+        if path := catch_up(tail, head):
+            *path, tail = path
+            visited.update(path + [tail])
+
+## Part 1
+print(len(visited))
