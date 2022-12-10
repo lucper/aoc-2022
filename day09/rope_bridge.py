@@ -52,7 +52,8 @@ with fileinput.input() as fin:
         print(f'head: {rope[0]}')
         for head, (tail_idx, tail) in zip(rope, enumerate(rope[1:], 1)):
             *path, rope[tail_idx] = catch_up(tail, head)
-            print(f'{path + [rope[tail_idx]]}')
+            #print(f'{path + [rope[tail_idx]]}')
+        print(path + [rope[-1]])
         print('-----')
         visited.update(path + [rope[-1]])
 
