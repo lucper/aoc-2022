@@ -29,7 +29,6 @@ def walk_down(pos, k):
     i, j = pos
     return [(i, y) for y in range(j - 1, j - k - 1, -1)]
 
-#number_of_knots = 4
 number_of_knots = 10
 rope = [(0,0) for _ in range(number_of_knots)]
 visited = {rope[-1]}
@@ -52,8 +51,7 @@ with fileinput.input() as fin:
         print(f'head: {rope[0]}')
         for head, (tail_idx, tail) in zip(rope, enumerate(rope[1:], 1)):
             *path, rope[tail_idx] = catch_up(tail, head)
-            #print(f'{path + [rope[tail_idx]]}')
-        print(path + [rope[-1]])
+            print(f'{path + [rope[tail_idx]]}')
         print('-----')
         visited.update(path + [rope[-1]])
 
