@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import fileinput
+from ast import literal_eval
 
 def right_order(left, right):
     if left and not right:
@@ -20,7 +21,7 @@ def right_order(left, right):
         return right_order(left[0], right[0]) or right_order(left[1:], right[1:])
 
 with fileinput.input() as fin:
-    pairs = [eval(line.strip()) for line in fin if line.strip()]
+    pairs = [literal_eval(line.strip()) for line in fin if line.strip()]
     count = sum(i for i, pair in enumerate(zip(pairs[::2], pairs[1::2]), 1) if right_order(*pair))
 
 print(count)
