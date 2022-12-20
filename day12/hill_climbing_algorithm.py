@@ -5,6 +5,7 @@ from string import ascii_lowercase
 
 START = 'S' # elevation 'a'
 END = 'E'   # elevation 'z'
+## TODO: need to treat E as z
 
 def are_neighbors(x, y):
     return (abs(ord(x) - ord(y)) <= 1 and x in ascii_lowercase and y in ascii_lowercase) \
@@ -35,6 +36,7 @@ def search(grid, start):
         i, j = q.pop(0)
         if grid[i][j] == END:
             print(f'reached goal at ({i}, {j})!')
+            goal = (i, j)
             break
         for v in get_neighbors(grid, (i, j)):
             if v not in visited:
@@ -44,7 +46,13 @@ def search(grid, start):
 
                 i, j = v
                 print(f'{grid[i][j]}: {v}')
-        print(parent)
+    print(parent)
+    curr = goal
+    path = [goal]
+    while parent[curr]:
+        curr = parent[curr]
+        path.append(curr)
+    print(list(reversed(path)))
 
 def get_start_pos(grid):
     return ((i, j) for i, row in enumerate(grid)
