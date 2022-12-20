@@ -8,8 +8,11 @@ END = 'E'   # elevation 'z'
 ## TODO: need to treat E as z
 
 def are_neighbors(x, y):
-    return (abs(ord(x) - ord(y)) <= 1 and x in ascii_lowercase and y in ascii_lowercase) \
-            or x == END or y == END
+    if x == END:
+        x = 'z'
+    if y == END:
+        y = 'z'
+    return (abs(ord(x) - ord(y)) <= 1 and x in ascii_lowercase and y in ascii_lowercase)
 
 def get_neighbors(grid, pos):
     i, j = pos
@@ -46,13 +49,12 @@ def search(grid, start):
 
                 i, j = v
                 print(f'{grid[i][j]}: {v}')
-    print(parent)
     curr = goal
     path = [goal]
-    while parent[curr]:
-        curr = parent[curr]
+    while curr := parent[curr]:
         path.append(curr)
     print(list(reversed(path)))
+    print(len(list(path)))
 
 def get_start_pos(grid):
     return ((i, j) for i, row in enumerate(grid)
@@ -66,7 +68,5 @@ if __name__ == '__main__':
     # can be better
     i, j = next(get_start_pos(puzzle))
     puzzle[i][j] = 'a'
-
-    #print(get_neighbors(puzzle, (i, j)))
 
     search(puzzle, (i, j))
